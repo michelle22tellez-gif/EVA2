@@ -1,0 +1,484 @@
+MySQL Shell 8.0.43
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 27
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| abarrotes          |
+| biblioteca         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| prueba             |
+| sakila             |
+| sys                |
+| tbd1               |
+| tbd2               |
+| world              |
++--------------------+
+11 rows in set (0.0164 sec)
+ MySQL  localhost:3306 ssl  SQL > useuse tbd2;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'useuse tbd2' at line 1
+ MySQL  localhost:3306 ssl  SQL > use tbd2;
+Default schema set to `tbd2`.
+Fetching global names, object names from `tbd2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd2  SQL > create table tablaA(
+                                     -> id int,
+                                     -> calor varchar(1));
+Query OK, 0 rows affected (0.1676 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > create table tablaB( id int, calor varchar(1));
+Query OK, 0 rows affected (0.0737 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > insert into tablaA
+                                     -> values(1,"A"),(2,"B"),(3,"C"),(4,"D");
+Query OK, 4 rows affected (0.0526 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd2  SQL > insert into tablBA values(1,"X"),(2,"Y"),(3,"Z"),(4,"A"),(5,"B");
+ERROR: 1146 (42S02): Table 'tbd2.tablba' doesn't exist
+ MySQL  localhost:3306 ssl  tbd2  SQL > insert into tablaB values(1,"X"),(2,"Y"),(3,"Z"),(4,"A"),(5,"B");
+Query OK, 5 rows affected (0.0451 sec)
+
+Records: 5  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA;
++----+-------+
+| id | calor |
++----+-------+
+|  1 | A     |
+|  2 | B     |
+|  3 | C     |
+|  4 | D     |
++----+-------+
+4 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaB;
++----+-------+
+| id | calor |
++----+-------+
+|  1 | X     |
+|  2 | Y     |
+|  3 | Z     |
+|  4 | A     |
+|  5 | B     |
++----+-------+
+5 rows in set (0.0012 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA
+                                     -> union
+                                     -> select * from tableB;
+ERROR: 1146 (42S02): Table 'tbd2.tableb' doesn't exist
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA union select * from tablaB;
++----+-------+
+| id | calor |
++----+-------+
+|  1 | A     |
+|  2 | B     |
+|  3 | C     |
+|  4 | D     |
+|  1 | X     |
+|  2 | Y     |
+|  3 | Z     |
+|  4 | A     |
+|  5 | B     |
++----+-------+
+9 rows in set (0.0035 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA where calor in (
+                                     -> select distinct calor from tablaB);
++----+-------+
+| id | calor |
++----+-------+
+|  1 | A     |
+|  2 | B     |
++----+-------+
+2 rows in set (0.0406 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA where calor not in ( select distinct calor from tablaB);
++----+-------+
+| id | calor |
++----+-------+
+|  3 | C     |
+|  4 | D     |
++----+-------+
+2 rows in set (0.0408 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select a.calor, b.calor
+                                     -> from tablaA a, tabla B b;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'b' at line 2
+ MySQL  localhost:3306 ssl  tbd2  SQL > select a.calor, b.calor from tablaA a, tablaB b;
++-------+-------+
+| calor | calor |
++-------+-------+
+| D     | X     |
+| C     | X     |
+| B     | X     |
+| A     | X     |
+| D     | Y     |
+| C     | Y     |
+| B     | Y     |
+| A     | Y     |
+| D     | Z     |
+| C     | Z     |
+| B     | Z     |
+| A     | Z     |
+| D     | A     |
+| C     | A     |
+| B     | A     |
+| A     | A     |
+| D     | B     |
+| C     | B     |
+| B     | B     |
+| A     | B     |
++-------+-------+
+20 rows in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| abarrotes          |
+| biblioteca         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| prueba             |
+| sakila             |
+| sys                |
+| tbd1               |
+| tbd2               |
+| world              |
++--------------------+
+11 rows in set (0.0408 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > use mysql;
+Default schema set to `mysql`.
+Fetching global names, object names from `mysql` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  mysql  SQL > show tables;
++------------------------------------------------------+
+| Tables_in_mysql                                      |
++------------------------------------------------------+
+| columns_priv                                         |
+| component                                            |
+| db                                                   |
+| default_roles                                        |
+| engine_cost                                          |
+| func                                                 |
+| general_log                                          |
+| global_grants                                        |
+| gtid_executed                                        |
+| help_category                                        |
+| help_keyword                                         |
+| help_relation                                        |
+| help_topic                                           |
+| innodb_index_stats                                   |
+| innodb_table_stats                                   |
+| ndb_binlog_index                                     |
+| password_history                                     |
+| plugin                                               |
+| procs_priv                                           |
+| proxies_priv                                         |
+| replication_asynchronous_connection_failover         |
+| replication_asynchronous_connection_failover_managed |
+| replication_group_configuration_version              |
+| replication_group_member_actions                     |
+| role_edges                                           |
+| server_cost                                          |
+| servers                                              |
+| slave_master_info                                    |
+| slave_relay_log_info                                 |
+| slave_worker_info                                    |
+| slow_log                                             |
+| tables_priv                                          |
+| time_zone                                            |
+| time_zone_leap_second                                |
+| time_zone_name                                       |
+| time_zone_transition                                 |
+| time_zone_transition_type                            |
+| user                                                 |
++------------------------------------------------------+
+38 rows in set (0.0045 sec)
+ MySQL  localhost:3306 ssl  mysql  SQL > create user "prueba"@"localhost"
+                                      -> identified by "Mt555602";
+Query OK, 0 rows affected (0.0947 sec)
+ MySQL  localhost:3306 ssl  mysql  SQL > \conncet --mm prueba@localhost
+Unknown command: '\conncet --mm prueba@localhost'
+ MySQL  localhost:3306 ssl  mysql  SQL > select * from user;
++-----------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+-----------------------+------------------------------------------------------------------------+------------------+-----------------------+-------------------+----------------+------------------+----------------+------------------------+---------------------+--------------------------+-----------------+
+| Host      | User             | Select_priv | Insert_priv | Update_priv | Delete_priv | Create_priv | Drop_priv | Reload_priv | Shutdown_priv | Process_priv | File_priv | Grant_priv | References_priv | Index_priv | Alter_priv | Show_db_priv | Super_priv | Create_tmp_table_priv | Lock_tables_priv | Execute_priv | Repl_slave_priv | Repl_client_priv | Create_view_priv | Show_view_priv | Create_routine_priv | Alter_routine_priv | Create_user_priv | Event_priv | Trigger_priv | Create_tablespace_priv | ssl_type | ssl_cipher | x509_issuer | x509_subject | max_questions | max_updates | max_connections | max_user_connections | plugin                | authentication_string                                                  | password_expired | password_last_changed | password_lifetime | account_locked | Create_role_priv | Drop_role_priv | Password_reuse_history | Password_reuse_time | Password_require_current | User_attributes |
++-----------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+-----------------------+------------------------------------------------------------------------+------------------+-----------------------+-------------------+----------------+------------------+----------------+------------------------+---------------------+--------------------------+-----------------+
+| localhost | mysql.infoschema | Y           | N           | N           | N           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                | N                | N              | N                   | N                  | N                | N          | N            | N                      |          | 0x         | 0x          | 0x           |             0 |           0 |               0 |                    0 | caching_sha2_password | $A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED | N                | 2024-11-28 22:40:11   |              NULL | Y              | N                | N              |                   NULL |                NULL | NULL                     | NULL            |
+| localhost | mysql.session    | N           | N           | N           | N           | N           | N         | N           | Y             | N            | N         | N          | N               | N          | N          | N            | Y          | N                     | N                | N            | N               | N                | N                | N              | N                   | N                  | N                | N          | N            | N                      |          | 0x         | 0x          | 0x           |             0 |           0 |               0 |                    0 | caching_sha2_password | $A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED | N                | 2024-11-28 22:40:11   |              NULL | Y              | N                | N              |                   NULL |                NULL | NULL                     | NULL            |
+| localhost | mysql.sys        | N           | N           | N           | N           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                | N                | N              | N                   | N                  | N                | N          | N            | N                      |          | 0x         | 0x          | 0x           |             0 |           0 |               0 |                    0 | caching_sha2_password | $A$005$THISISACOMBINATIONOFINVALIDSALTANDPASSWORDTHATMUSTNEVERBRBEUSED | N                | 2024-11-28 22:40:11   |              NULL | Y              | N                | N              |                   NULL |                NULL | NULL                     | NULL            |
+| localhost | prueba           | N           | N           | N           | N           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                | N                | N              | N                   | N                  | N                | N          | N            | N                      |          | 0x         | 0x          | 0x           |             0 |           0 |               0 |                    0 | caching_sha2_password | $A$005$r
+                                                           hx7Bv@;Gc|,|J;PindQ./T/3zbqLG8IHZFHkAANE8NG3fv6KRp/lAGXoOC | N                | 2025-10-15 19:25:59   |              NULL | N              | N                | N              |                   NULL |                NULL | NULL                     | NULL            |
+| localhost | root             | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                | Y                | Y              | Y                   | Y                  | Y                | Y          | Y            | Y                      |          | 0x         | 0x          | 0x           |             0 |           0 |               0 |                    0 | caching_sha2_password | $A$005$^
+}{yj%*Ir9w-1`d6cQ3dcCJdQf29kUTMiYY6fDZppKE36Xu84M/6.fu5Ij1 | N                | 2024-11-28 22:40:17   |              NULL | N              | Y                | Y              |                   NULL |                NULL | NULL                     | NULL            |
++-----------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+------------------+----------------+---------------------+--------------------+------------------+------------+--------------+------------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+----------------------+-----------------------+------------------------------------------------------------------------+------------------+-----------------------+-------------------+----------------+------------------+----------------+------------------------+---------------------+--------------------------+-----------------+
+5 rows in set (0.0425 sec)
+ MySQL  localhost:3306 ssl  mysql  SQL > \connect --mc prueba@localhost
+Creating a Classic session to 'prueba@localhost'
+Please provide the password for 'prueba@localhost': ********
+Save password for 'prueba@localhost'? [Y]es/[N]o/Ne[v]er (default No): yes
+Fetching global names for auto-completion... Press ^C to stop.
+Error during auto-completion cache update: Access denied; you need (at least one of) the PROCESS privilege(s) for this operation
+Closing old connection...
+Your MySQL connection id is 28
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
++--------------------+
+2 rows in set (0.0421 sec)
+ MySQL  localhost:3306 ssl  SQL > use information_schema;
+Default schema set to `information_schema`.
+Fetching global names, object names from `information_schema` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  information_schema  SQL > show tables;
++---------------------------------------+
+| Tables_in_information_schema          |
++---------------------------------------+
+| ADMINISTRABLE_ROLE_AUTHORIZATIONS     |
+| APPLICABLE_ROLES                      |
+| CHARACTER_SETS                        |
+| CHECK_CONSTRAINTS                     |
+| COLLATION_CHARACTER_SET_APPLICABILITY |
+| COLLATIONS                            |
+| COLUMN_PRIVILEGES                     |
+| COLUMN_STATISTICS                     |
+| COLUMNS                               |
+| COLUMNS_EXTENSIONS                    |
+| ENABLED_ROLES                         |
+| ENGINES                               |
+| EVENTS                                |
+| FILES                                 |
+| INNODB_BUFFER_PAGE                    |
+| INNODB_BUFFER_PAGE_LRU                |
+| INNODB_BUFFER_POOL_STATS              |
+| INNODB_CACHED_INDEXES                 |
+| INNODB_CMP                            |
+| INNODB_CMP_PER_INDEX                  |
+| INNODB_CMP_PER_INDEX_RESET            |
+| INNODB_CMP_RESET                      |
+| INNODB_CMPMEM                         |
+| INNODB_CMPMEM_RESET                   |
+| INNODB_COLUMNS                        |
+| INNODB_DATAFILES                      |
+| INNODB_FIELDS                         |
+| INNODB_FOREIGN                        |
+| INNODB_FOREIGN_COLS                   |
+| INNODB_FT_BEING_DELETED               |
+| INNODB_FT_CONFIG                      |
+| INNODB_FT_DEFAULT_STOPWORD            |
+| INNODB_FT_DELETED                     |
+| INNODB_FT_INDEX_CACHE                 |
+| INNODB_FT_INDEX_TABLE                 |
+| INNODB_INDEXES                        |
+| INNODB_METRICS                        |
+| INNODB_SESSION_TEMP_TABLESPACES       |
+| INNODB_TABLES                         |
+| INNODB_TABLESPACES                    |
+| INNODB_TABLESPACES_BRIEF              |
+| INNODB_TABLESTATS                     |
+| INNODB_TEMP_TABLE_INFO                |
+| INNODB_TRX                            |
+| INNODB_VIRTUAL                        |
+| KEY_COLUMN_USAGE                      |
+| KEYWORDS                              |
+| OPTIMIZER_TRACE                       |
+| PARAMETERS                            |
+| PARTITIONS                            |
+| PLUGINS                               |
+| PROCESSLIST                           |
+| PROFILING                             |
+| REFERENTIAL_CONSTRAINTS               |
+| RESOURCE_GROUPS                       |
+| ROLE_COLUMN_GRANTS                    |
+| ROLE_ROUTINE_GRANTS                   |
+| ROLE_TABLE_GRANTS                     |
+| ROUTINES                              |
+| SCHEMA_PRIVILEGES                     |
+| SCHEMATA                              |
+| SCHEMATA_EXTENSIONS                   |
+| ST_GEOMETRY_COLUMNS                   |
+| ST_SPATIAL_REFERENCE_SYSTEMS          |
+| ST_UNITS_OF_MEASURE                   |
+| STATISTICS                            |
+| TABLE_CONSTRAINTS                     |
+| TABLE_CONSTRAINTS_EXTENSIONS          |
+| TABLE_PRIVILEGES                      |
+| TABLES                                |
+| TABLES_EXTENSIONS                     |
+| TABLESPACES                           |
+| TABLESPACES_EXTENSIONS                |
+| TRIGGERS                              |
+| USER_ATTRIBUTES                       |
+| USER_PRIVILEGES                       |
+| VIEW_ROUTINE_USAGE                    |
+| VIEW_TABLE_USAGE                      |
+| VIEWS                                 |
++---------------------------------------+
+79 rows in set (0.0429 sec)
+ MySQL  localhost:3306 ssl  information_sch... SQL > select * from views;
+
+Empty set (0.0447 sec)
+ MySQL  localhost:3306 ssl  information_sch... SQL > create table tablax;
+
+ERROR: 1044 (42000): Access denied for user 'prueba'@'localhost' to database 'information_schema'
+ MySQL  localhost:3306 ssl  information_sch... SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Closing old connection...
+Your MySQL connection id is 33
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| abarrotes          |
+| biblioteca         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| prueba             |
+| sakila             |
+| sys                |
+| tbd1               |
+| tbd2               |
+| world              |
++--------------------+
+11 rows in set (0.0402 sec)
+ MySQL  localhost:3306 ssl  SQL > grant all on tbd2.* to "prueba"@"localhost";
+Query OK, 0 rows affected (0.0528 sec)
+ MySQL  localhost:3306 ssl  SQL > \connect --mc prueba@localhost
+Creating a Classic session to 'prueba@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Error during auto-completion cache update: Access denied; you need (at least one of) the PROCESS privilege(s) for this operation
+Closing old connection...
+Your MySQL connection id is 34
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| tbd2               |
++--------------------+
+3 rows in set (0.0019 sec)
+ MySQL  localhost:3306 ssl  SQL > create database pruebota;
+ERROR: 1044 (42000): Access denied for user 'prueba'@'localhost' to database 'pruebota'
+ MySQL  localhost:3306 ssl  SQL > use tbd2;
+Default schema set to `tbd2`.
+Fetching global names, object names from `tbd2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd2  SQL > show tables;
++----------------+
+| Tables_in_tbd2 |
++----------------+
+| asignatura     |
+| cliente        |
+| detallehorario |
+| estudiante     |
+| horario        |
+| producto       |
+| tablaa         |
+| tablab         |
+| venta          |
+| ventadetalle   |
++----------------+
+10 rows in set (0.0022 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL >  create table prueba(id int);
+Query OK, 0 rows affected (0.0883 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Closing old connection...
+Your MySQL connection id is 35
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create user "prueba2"@"localhost" identified by"18";
+Query OK, 0 rows affected (0.0616 sec)
+ MySQL  localhost:3306 ssl  SQL > grant select on tbd2.tablaa to"prueba2"@"localhost";
+Query OK, 0 rows affected (0.0459 sec)
+ MySQL  localhost:3306 ssl  SQL > \connect --mc prueba2@localhost
+Creating a Classic session to 'prueba2@localhost'
+Please provide the password for 'prueba2@localhost': **
+Save password for 'prueba2@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+
+Fetching global names for auto-completion... Press ^C to stop.
+Error during auto-completion cache update: Access denied; you need (at least one of) the PROCESS privilege(s) for this operation
+Closing old connection...
+Your MySQL connection id is 36
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show tables;
+ERROR: 1046 (3D000): No database selected
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| performance_schema |
+| tbd2               |
++--------------------+
+3 rows in set (0.0018 sec)
+ MySQL  localhost:3306 ssl  SQL > show tables;
+ERROR: 1046 (3D000): No database selected
+ MySQL  localhost:3306 ssl  SQL > use tbd2;
+Default schema set to `tbd2`.
+Fetching global names, object names from `tbd2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd2  SQL > show tables;
++----------------+
+| Tables_in_tbd2 |
++----------------+
+| tablaa         |
++----------------+
+1 row in set (0.0022 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > select * from tablaA;
++----+-------+
+| id | calor |
++----+-------+
+|  1 | A     |
+|  2 | B     |
+|  3 | C     |
+|  4 | D     |
++----+-------+
+4 rows in set (0.0399 sec)
+ MySQL  localhost:3306 ssl  tbd2  SQL > insert into tablaa values(5,"E") ;
+ERROR: 1142 (42000): INSERT command denied to user 'prueba2'@'localhost' for table 'tablaa'
+ MySQL  localhost:3306 ssl  tbd2  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Closing old connection...
+Your MySQL connection id is 37
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create user "prueba3"@"localhost"  ;
+Query OK, 0 rows affected (0.0556 sec)
+ MySQL  localhost:3306 ssl  SQL > grant select(calor) on tbd2.tablaa to "prueba3"@"localhost";
+Query OK, 0 rows affected (0.0449 sec)
+ MySQL  localhost:3306 ssl  SQL > \connect --mc prueba3@localhost
+Creating a Classic session to 'prueba3@localhost'
+Please provide the password for 'prueba3@localhost':
+Save password for 'prueba3@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+
+Fetching global names for auto-completion... Press ^C to stop.
+Error during auto-completion cache update: Access denied; you need (at least one of) the PROCESS privilege(s) for this operation
+Closing old connection...
+Your MySQL connection id is 39
+Server version: 8.0.43 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > use tbd2;
+Default schema set to `tbd2`.
+Fetching global names, object names from `tbd2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd2  SQL >  select * from valor;
+ERROR: 1142 (42000): SELECT command denied to user 'prueba3'@'localhost' for table 'valor'
